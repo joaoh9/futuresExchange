@@ -9,17 +9,19 @@ exports.authenticateAndConnect = async (req, res, next) => {
     const { accountid } = req.headers;
     const { path } = req;
     const exchangename = path.split('/')[1];
-    if (!exchangeExists(exchangename))
+    if (!exchangeExists(exchangename)) {
       throw {
         message: 'Exchange not found',
-        type: 'Invalid Exchange'
+        type: 'Invalid Exchange',
       };
+    }
     let exchangeOptions;
-    if (!accountid)
+    if (!accountid) {
       throw {
         message: 'Invalid AccountId',
-        type: 'Invalid AccountId'
+        type: 'Invalid AccountId',
       };
+    }
     const apiPair = await getApiPair(exchangename, accountid);
     if (apiPair) {
       const { apiKey, secret } = apiPair;
@@ -31,13 +33,13 @@ exports.authenticateAndConnect = async (req, res, next) => {
         urls: {
           api: {
             fapiPublic: 'https://testnet.binancefuture.com/fapi/v1', // ←------  fapi prefix here
-            fapiPrivate: 'https://testnet.binancefuture.com/fapi/v1' // ←------  fapi prefix here
-          }
+            fapiPrivate: 'https://testnet.binancefuture.com/fapi/v1', // ←------  fapi prefix here
+          },
         },
         options: {
           defaultType: 'future',
-          warnOnFetchOpenOrdersWithoutSymbol: false
-        }
+          warnOnFetchOpenOrdersWithoutSymbol: false,
+        },
       };
     } else {
       exchangeOptions = {
@@ -46,13 +48,13 @@ exports.authenticateAndConnect = async (req, res, next) => {
         urls: {
           api: {
             fapiPublic: 'https://testnet.binancefuture.com/fapi/v1', // ←------  fapi prefix here
-            fapiPrivate: 'https://testnet.binancefuture.com/fapi/v1' // ←------  fapi prefix here
-          }
+            fapiPrivate: 'https://testnet.binancefuture.com/fapi/v1', // ←------  fapi prefix here
+          },
         },
         options: {
           defaultType: 'future',
-          warnOnFetchOpenOrdersWithoutSymbol: false
-        }
+          warnOnFetchOpenOrdersWithoutSymbol: false,
+        },
       };
     }
     const exchangeClass = ccxt[exchangename],
@@ -83,7 +85,7 @@ exports.loadExchangeMarkets = async (req, res, next) => {
 
 exports.isInstrumentValid = async (req, res, next) => {
   try {
-    let instrumentName = req.query.instrumentName || req.body.instrumentName;
+    const instrumentName = req.query.instrumentName || req.body.instrumentName;
     if (!instrumentName || !exchangeMarkets[instrumentName.toUpperCase()]) {
       throw { message: 'Instrument not found', type: 'Invalid Instrument' };
     } else {
