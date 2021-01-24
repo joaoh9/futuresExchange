@@ -1,0 +1,37 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "printWidth": 100,
+  "trailingComma": "es5",
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "src/api/routes/*.js",
+      "options": {
+        "printWidth": 69
+      }
+    },
+    {
+      "files": "src/api/routes/company.js",
+      "options": {
+        "printWidth": 73
+      }
+    },
+    {
+      "files": "test/**/**/*.js",
+      "options": {
+        "printWidth": 90
+      }
+    },
+    {
+      "files": "src/helpers/hashHelper.js",
+      "options": {
+        "printWidth": 70
+      }
+    }
+  ]
+}

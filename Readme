@@ -1,0 +1,24 @@
+# What we have
+
+Tested:
+- [x] Binance get balance API
+- [x] Binance get funding API
+- [x] Binance set leverage API
+- [x] Binance get leverage API
+- [x] Binance get Instrument price info
+- [x] Binance cancel order
+- [x] Binance cancel all orders
+- [x] Binance get order by id
+- [x] Binance get all orders
+- [x] Binance get open orders
+- [x] Binance get all instruments
+- [x] Binance get instrument info
+- [x] Binance update order
+- [x] Binance create order
+- [x] Binance get the order book
+- [x] Binance get stops
+- [x] Binance get open stops
+- [x] Binance create orders
+- [x] Binance get instrument price info
+
+# What we don't have

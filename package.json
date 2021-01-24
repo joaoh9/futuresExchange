@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout 150000 -R spec --recursive --exit",
+    "test": "nyc --reporter=html mocha './test/integration/api/*.test.js' --timeout 60000 -R spec --recursive --exit",
+    "lint": "prettier --write src/**/*.js && prettier --write test/**/**/*.js && eslint --fix src/**/*.js && eslint --fix test/**/**/*.js",
     "start": "nodemon --inspect=0.0.0.0 ./src/app.js"
   },
   "author": "",
@@ -22,9 +23,11 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "eslint": "^7.18.0",
     "mocha": "^7.1.0",
     "mocha-each": "^2.0.1",
     "nyc": "^15.0.0",
+    "prettier": "^2.2.1",
     "serverless-offline": "^5.12.1"
   }
 }
