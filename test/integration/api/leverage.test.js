@@ -1,8 +1,8 @@
 const chai = require('chai'),
   chaiHttp = require('chai-http');
 const expect = chai.expect;
-let server = require('../../../src/app');
-let market = 'BTC/USDT';
+const server = require('../../../src/app');
+const market = 'BTC/USDT';
 
 chai.use(chaiHttp);
 
@@ -14,7 +14,7 @@ const setLeverage = ({ instrumentName, leverage }) =>
     .set('accountId', 'test')
     .send({
       instrumentName,
-      leverage
+      leverage,
     });
 const getLeverage = ({ instrumentName }) =>
   chai
@@ -23,7 +23,7 @@ const getLeverage = ({ instrumentName }) =>
     .set('Accept', 'application/json')
     .set('accountId', 'test')
     .query({
-      instrumentName
+      instrumentName,
     });
 
 describe('api', () => {
@@ -35,9 +35,8 @@ describe('api', () => {
         it('should set a leverage of 25x', async () => {
           const post = await setLeverage({
             instrumentName: market,
-            leverage: 25
+            leverage: 25,
           });
-          console.log(post);
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
           expect(post.body.instrumentName).to.be.equal(market);
@@ -47,7 +46,7 @@ describe('api', () => {
         it('should fail to set a leverage of 1000x', async () => {
           const post = await setLeverage({
             instrumentName: market,
-            leverage: 1000
+            leverage: 1000,
           });
           expect(post).to.have.status(500);
           expect(post).to.have.property('body');
@@ -59,7 +58,7 @@ describe('api', () => {
         it('should set a leverage of 25x', async () => {
           const post = await setLeverage({
             instrumentName: market,
-            leverage: 25
+            leverage: 25,
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');

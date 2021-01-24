@@ -1,8 +1,8 @@
 const chai = require('chai'),
   chaiHttp = require('chai-http');
 const expect = chai.expect;
-let server = require('../../../src/app');
-let market = 'BTC/USDT';
+const server = require('../../../src/app');
+const market = 'BTC/USDT';
 chai.use(chaiHttp);
 
 const cancelAllOrders = ({ instrumentName }) =>
@@ -12,6 +12,7 @@ const cancelAllOrders = ({ instrumentName }) =>
     .set('Accept', 'application/json')
     .set('accountId', 'test')
     .query({ instrumentName });
+
 const getStops = ({ instrumentName }) =>
   chai
     .request(server)
@@ -19,8 +20,9 @@ const getStops = ({ instrumentName }) =>
     .set('Accept', 'application/json')
     .set('accountId', 'test')
     .query({
-      instrumentName
+      instrumentName,
     });
+
 const getOpenStops = ({ instrumentName }) =>
   chai
     .request(server)
@@ -28,18 +30,10 @@ const getOpenStops = ({ instrumentName }) =>
     .set('Accept', 'application/json')
     .set('accountId', 'test')
     .query({
-      instrumentName
+      instrumentName,
     });
 
-const createOrder = ({
-  instrumentName,
-  customId,
-  size,
-  side,
-  type,
-  price,
-  stopPrice
-}) =>
+const createOrder = ({ instrumentName, customId, size, side, type, price, stopPrice }) =>
   chai
     .request(server)
     .post('/api/binance/order')
@@ -48,17 +42,17 @@ const createOrder = ({
     .send({
       instrumentName,
       ...(price && {
-        price
+        price,
       }),
       ...(customId && {
-        customId
+        customId,
       }),
       ...(stopPrice && {
-        stopPrice
+        stopPrice,
       }),
       size,
       side,
-      type
+      type,
     });
 
 const getInstrumentPriceInfo = ({ instrumentName }) =>
@@ -78,13 +72,13 @@ describe('api', () => {
   describe('/binance', () => {
     describe('/stop', () => {
       describe('/get', () => {
-        it(`should open two orders and check if the stops are concise then cancel both`, async () => {
+        it('should open two orders and check if the stops are concise then cancel both', async () => {
           const post1 = await createOrder({
             instrumentName: market,
             size: 1000,
             type: 'TAKE_PROFIT_MARKET',
             side: 'LONG',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85),
           });
 
           expect(post1).to.have.status(200);
@@ -94,7 +88,7 @@ describe('api', () => {
             size: 1000,
             stopPrice: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'TAKE_PROFIT_MARKET',
-            side: 'SHORT'
+            side: 'SHORT',
           });
 
           expect(post2).to.have.status(200);
@@ -112,13 +106,13 @@ describe('api', () => {
           const cancel = await cancelAllOrders({ instrumentName: market });
           expect(cancel).to.have.status(200);
         });
-        it(`should open two orders and check if the OPEN stops are concise then cancel both`, async () => {
+        it('should open two orders and check if the OPEN stops are concise then cancel both', async () => {
           const post1 = await createOrder({
             instrumentName: market,
             size: 1000,
             type: 'TAKE_PROFIT_MARKET',
             side: 'LONG',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85),
           });
 
           expect(post1).to.have.status(200);
@@ -128,7 +122,7 @@ describe('api', () => {
             size: 1000,
             stopPrice: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'TAKE_PROFIT_MARKET',
-            side: 'SHORT'
+            side: 'SHORT',
           });
 
           expect(post2).to.have.status(200);

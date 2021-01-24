@@ -1,8 +1,8 @@
 const chai = require('chai'),
   chaiHttp = require('chai-http');
 const expect = chai.expect;
-let server = require('../../../src/app');
-let market = 'BTC/USDT';
+const server = require('../../../src/app');
+// const market = 'BTC/USDT';
 
 chai.use(chaiHttp);
 

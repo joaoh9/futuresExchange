@@ -1,8 +1,8 @@
 const chai = require('chai'),
   chaiHttp = require('chai-http');
 const expect = chai.expect;
-let server = require('../../../src/app');
-let market = 'BTC/USDT';
+const server = require('../../../src/app');
+const market = 'BTC/USDT';
 
 chai.use(chaiHttp);
 
@@ -13,17 +13,10 @@ const getPosition = ({ instrumentName }) =>
     .set('Accept', 'application/json')
     .set('accountId', 'test')
     .query({
-      instrumentName
+      instrumentName,
     });
-const createOrder = ({
-  instrumentName,
-  customId,
-  size,
-  side,
-  type,
-  price,
-  stopPrice
-}) =>
+
+const createOrder = ({ instrumentName, customId, size, side, type, price, stopPrice }) =>
   chai
     .request(server)
     .post('/api/binance/order')
@@ -32,17 +25,17 @@ const createOrder = ({
     .send({
       instrumentName,
       ...(price && {
-        price
+        price,
       }),
       ...(customId && {
-        customId
+        customId,
       }),
       ...(stopPrice && {
-        stopPrice
+        stopPrice,
       }),
       size,
       side,
-      type
+      type,
     });
 
 const getInstrumentPriceInfo = ({ instrumentName }) =>
@@ -68,7 +61,7 @@ describe('api', () => {
             instrumentName: market,
             size: 1000,
             type: 'MARKET',
-            side: 'LONG'
+            side: 'LONG',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -89,7 +82,7 @@ describe('api', () => {
             instrumentName: market,
             size: 1000,
             type: 'MARKET',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(cancel).to.have.status(200);
         });

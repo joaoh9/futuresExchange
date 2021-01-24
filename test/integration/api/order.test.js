@@ -1,8 +1,8 @@
 const chai = require('chai'),
   chaiHttp = require('chai-http');
 const expect = chai.expect;
-let server = require('../../../src/app');
-let market = 'BTC/USDT';
+const server = require('../../../src/app');
+const market = 'BTC/USDT';
 
 chai.use(chaiHttp);
 
@@ -53,12 +53,14 @@ const getOpenOrders = ({ instrumentName }) =>
     .set('accountId', 'test')
     .query({ instrumentName });
 
+/*
 const getAllInstruments = async () =>
   chai
     .request(server)
     .get('/api/binance/instrument/all')
     .set('Accept', 'application/json')
     .set('accountId', 'test');
+*/
 
 const getInstrumentInfo = async ({ instrumentName }) =>
   chai
@@ -75,7 +77,7 @@ const updateOrder = async ({
   side,
   type,
   price,
-  stopPrice
+  stopPrice,
 }) =>
   chai
     .request(server)
@@ -86,28 +88,20 @@ const updateOrder = async ({
       orderId,
       instrumentName,
       ...(price && {
-        price
+        price,
       }),
       ...(customId && {
-        customId
+        customId,
       }),
       ...(stopPrice && {
-        stopPrice
+        stopPrice,
       }),
       size,
       side,
-      type
+      type,
     });
 
-const createOrder = ({
-  instrumentName,
-  customId,
-  size,
-  side,
-  type,
-  price,
-  stopPrice
-}) =>
+const createOrder = ({ instrumentName, customId, size, side, type, price, stopPrice }) =>
   chai
     .request(server)
     .post('/api/binance/order')
@@ -116,22 +110,22 @@ const createOrder = ({
     .send({
       instrumentName,
       ...(price && {
-        price
+        price,
       }),
       ...(customId && {
-        customId
+        customId,
       }),
       ...(stopPrice && {
-        stopPrice
+        stopPrice,
       }),
       size,
       side,
-      type
+      type,
     });
 
 describe('api', () => {
   let priceInfo;
-  let marketInfo;
+  // let marketInfo;
   let instrumentInfo;
   before(async () => {
     priceInfo = await getInstrumentPriceInfo({ instrumentName: market });
@@ -153,7 +147,7 @@ describe('api', () => {
             size: 1000,
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'LIMIT',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -168,7 +162,7 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -180,7 +174,7 @@ describe('api', () => {
             size: 1000,
             price: Math.round(priceInfo.body.currentPrice * 0.9),
             type: 'LIMIT',
-            side: 'LONG'
+            side: 'LONG',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -195,7 +189,7 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -208,7 +202,7 @@ describe('api', () => {
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'TAKE_PROFIT',
             side: 'SHORT',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 1.15)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 1.15),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -226,7 +220,7 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -239,7 +233,7 @@ describe('api', () => {
             price: Math.round(priceInfo.body.currentPrice * 0.9),
             type: 'TAKE_PROFIT',
             side: 'LONG',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -257,7 +251,7 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -269,7 +263,7 @@ describe('api', () => {
             size: 1000,
             type: 'TAKE_PROFIT_MARKET',
             side: 'SHORT',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 1.15)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 1.15),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -285,7 +279,7 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -297,7 +291,7 @@ describe('api', () => {
             size: 1000,
             type: 'TAKE_PROFIT_MARKET',
             side: 'LONG',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -313,11 +307,11 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
-        it('should post a STOP SHORT with CUSTOM ID, SIZE 1 and PRICE = MARKET + 10%  and cancel it', async () => {
+        it.skip('should post a STOP SHORT with CUSTOM ID, SIZE 1 and PRICE = MARKET + 10%  and cancel it', async () => {
           const post = await createOrder({
             instrumentName: market,
             customId: 'ordertestId2',
@@ -325,7 +319,7 @@ describe('api', () => {
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'STOP',
             side: 'SHORT',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 1.15)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 1.15),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -343,11 +337,11 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
-        it('should post a STOP LONG with CUSTOM ID, SIZE 1 and PRICE = MARKET - 10%  and cancel it', async () => {
+        it.skip('should post a STOP LONG with CUSTOM ID, SIZE 1 and PRICE = MARKET - 10%  and cancel it', async () => {
           const post = await createOrder({
             instrumentName: market,
             customId: 'ordertestId2',
@@ -355,7 +349,7 @@ describe('api', () => {
             price: Math.round(priceInfo.body.currentPrice * 0.9),
             type: 'STOP',
             side: 'LONG',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -373,7 +367,7 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -384,7 +378,7 @@ describe('api', () => {
             size: 1000,
             type: 'STOP_MARKET',
             side: 'SHORT',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -400,7 +394,7 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -411,7 +405,7 @@ describe('api', () => {
             size: 1000,
             type: 'STOP_MARKET',
             side: 'LONG',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 1.15)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 1.15),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -427,7 +421,7 @@ describe('api', () => {
           const orderId = post.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -438,7 +432,7 @@ describe('api', () => {
             customId: 'ordertestId2',
             size: 1000,
             type: 'MARKET',
-            side: 'LONG'
+            side: 'LONG',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -453,7 +447,7 @@ describe('api', () => {
             customId: 'ordertestId2',
             size: 1000,
             type: 'MARKET',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(cancel).to.have.status(200);
         });
@@ -464,7 +458,7 @@ describe('api', () => {
             customId: 'ordertestId2',
             size: 1000,
             type: 'MARKET',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -479,7 +473,7 @@ describe('api', () => {
             customId: 'ordertestId2',
             size: 1000,
             type: 'MARKET',
-            side: 'LONG'
+            side: 'LONG',
           });
           expect(cancel).to.have.status(200);
         });
@@ -489,7 +483,7 @@ describe('api', () => {
             instrumentName: market,
             size: 0,
             type: 'MARKET',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(post).to.have.status(500);
           expect(post).to.have.property('body');
@@ -505,7 +499,7 @@ describe('api', () => {
             size: 1000,
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'LIMIT',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -542,7 +536,7 @@ describe('api', () => {
 
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -552,7 +546,7 @@ describe('api', () => {
             size: 1000,
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'LIMIT',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -567,7 +561,7 @@ describe('api', () => {
 
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
           const get = await getOrderById({ instrumentName: market, orderId });
@@ -593,7 +587,7 @@ describe('api', () => {
         it('should fail to get an order that does not exists ', async () => {
           const get = await getOrderById({
             instrumentName: market,
-            orderId: 0
+            orderId: 0,
           });
           expect(get).to.have.status(500);
           expect(get).to.have.property('body');
@@ -603,7 +597,7 @@ describe('api', () => {
         it('should fail to get an order sending empty params ', async () => {
           const get = await getOrderById({
             instrumentName: null,
-            orderId: null
+            orderId: null,
           });
           expect(get).to.have.status(500);
           expect(get).to.have.property('body');
@@ -618,7 +612,7 @@ describe('api', () => {
             size: 1000,
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'LIMIT',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -636,7 +630,7 @@ describe('api', () => {
             size: 2000,
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'LIMIT',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(put).to.have.status(200);
           expect(put).to.have.property('body');
@@ -650,7 +644,7 @@ describe('api', () => {
           orderId = put.body.id;
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -660,7 +654,7 @@ describe('api', () => {
             size: 1000,
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'LIMIT',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -671,14 +665,14 @@ describe('api', () => {
           expect(post.body.price).to.be.equal(
             Math.round(priceInfo.body.currentPrice * 1.1)
           );
-          let orderId = post.body.id;
+          const orderId = post.body.id;
           const put = await updateOrder({
             instrumentName: 'AAA/AAA',
             orderId,
             size: 2000,
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'LIMIT',
-            side: 'SHORT'
+            side: 'SHORT',
           });
           expect(put).to.have.status(500);
           expect(put).to.have.property('body');
@@ -686,7 +680,7 @@ describe('api', () => {
           expect(put.body).to.have.property('message');
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
@@ -699,7 +693,7 @@ describe('api', () => {
             size: 1000,
             type: 'TAKE_PROFIT_MARKET',
             side: 'LONG',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85),
           });
           expect(post).to.have.status(200);
           expect(post).to.have.property('body');
@@ -733,19 +727,19 @@ describe('api', () => {
 
           const deletion = await cancelOrder({
             instrumentName: market,
-            orderId
+            orderId,
           });
           expect(deletion).to.have.status(200);
         });
       });
       describe('/get/open', () => {
-        it(`should open two orders, get all open orders and verify the two orders matches`, async () => {
+        it('should open two orders, get all open orders and verify the two orders matches', async () => {
           const post1 = await createOrder({
             instrumentName: market,
             size: 1000,
             type: 'TAKE_PROFIT_MARKET',
             side: 'LONG',
-            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85)
+            stopPrice: Math.round(priceInfo.body.currentPrice * 0.85),
           });
 
           expect(post1).to.have.status(200);
@@ -755,7 +749,7 @@ describe('api', () => {
             size: 1000,
             price: Math.round(priceInfo.body.currentPrice * 1.1),
             type: 'LIMIT',
-            side: 'SHORT'
+            side: 'SHORT',
           });
 
           expect(post2).to.have.status(200);
@@ -793,19 +787,17 @@ describe('api', () => {
           expect(order2.side).to.be.equal('SHORT');
           expect(order2.type).to.be.equal('LIMIT');
           expect(order2.instrumentName).to.be.equal(market);
-          expect(order2.price).to.be.equal(
-            Math.round(priceInfo.body.currentPrice * 1.1)
-          );
+          expect(order2.price).to.be.equal(Math.round(priceInfo.body.currentPrice * 1.1));
           expect(order2.pricePrecision).to.be.equal(
             instrumentInfo.body.priceTickPrecision
           );
 
           const deletion = await cancelAllOrders({
-            instrumentName: market
+            instrumentName: market,
           });
           expect(deletion).to.have.status(200);
         });
-        it(`should get open orders with no orders open and return an empty array`, async () => {
+        it('should get open orders with no orders open and return an empty array', async () => {
           const openOrders = await getOpenOrders({ instrumentName: market });
           expect(openOrders).to.have.status(200);
           expect(openOrders.body).to.have.lengthOf(0);
